@@ -51,26 +51,17 @@ exports.register = async (req, res) => {
 
 // Authenticate user and get token
 exports.login = async (req, res) => {
-    const { email, password } = req.body;
-    console.log('Logging in with:', email, password);
-  
+    const { email, password } = req.body;  
     try {
       const user = await User.findOne({ email });
       if (!user) {
-        console.log('User not found for email:', email);
         return res.status(401).json({ message: 'Invalid email or password' });
       }
-  
-      console.log('User found:', user);
-      const hashedPassword = await bcrypt.hash(password, 10);
-      console.log('hasedpass', hashedPassword)
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         console.log('Password mismatch');
         return res.status(401).json({ message: 'Invalid email or password' });
       }
-  
-      console.log('Password matched, generating token...');
       const token = generateToken(user);
       res.json({
         _id: user._id,
@@ -85,8 +76,6 @@ exports.login = async (req, res) => {
     }
   };
   
-  
-
 // Get user profile
 exports.getProfile = async (req, res) => {
   const user = await User.findById(req.user.id);
